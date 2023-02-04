@@ -1,17 +1,35 @@
-SDL2 vim syntax file
-====================
+# SDL2 Vim syntax file
 
-Usage
------
-Copy `sdl2.vim` to `~/.vim/syntax` and add this line to `~/.vimrc`
+This file adds Vim/Neovim syntax highlighting for SDL2.
 
-    au FileType c,cpp source ~/.vim/syntax/sdl2.vim
+Included SDL versions are:
 
-Generating syntax file
-----------------------
-File can be re-generated with `generator/sdl2_vim.py`. This script requires
-[pycparser]. `generator/utils` also belongs to `pycparser`, which some dummy
-additions.
+* SDL2 v2.0.20 - `sdl2_2.0.20.vim`
+* SDL2 v2.26.2 - `sdl2_2.26.2.vim`
 
+## Usage
 
-[pycparser]: https://github.com/eliben/pycparser
+Copy one of the `sdl2_VERSION.vim` files to `~/.vim/syntax/sdl2.vim` and add this to your `~/.vimrc`:
+
+```viml
+augroup sdl2
+    autocmd!
+    autocmd FileType c,cpp source ~/.vim/syntax/sdl2.vim
+augroup END
+```
+
+## Generating the Syntax File
+
+The file can be re-generated with `generator/sdl2_vim.py`. Run it like:
+
+```sh
+$ ./sdl2_vim.py /usr/include/SDL2/
+```
+
+The generator script requires [pycparser](https://github.com/eliben/pycparser). The `generator/utils` directory also belongs to `pycparser`.
+
+## License
+
+* `generator/sdl2_vim.py` copyright Keltar - <https://github.com/keltar/sdl2_vim_syntax>
+* `generator/utils` copyright Eli Bendersky - <https://github.com/eliben/pycparser/blob/master/LICENSE>
+

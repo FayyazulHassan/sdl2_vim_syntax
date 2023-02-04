@@ -30,6 +30,5 @@ The generator script requires [pycparser](https://github.com/eliben/pycparser). 
 
 ## License
 
-* `generator/sdl2_vim.py` copyright Keltar - <https://github.com/keltar/sdl2_vim_syntax>
+* `generator/sdl2_vim.py` public domain (unlicense)
 * `generator/utils` copyright Eli Bendersky - <https://github.com/eliben/pycparser/blob/master/LICENSE>
-

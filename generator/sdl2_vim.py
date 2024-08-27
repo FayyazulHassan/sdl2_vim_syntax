@@ -46,6 +46,33 @@ class SDLVisitor(c_ast.NodeVisitor):
         for v in node.values.enumerators:
             self.visit_Enumerator(v)
 
+    def process_defines(self, defines: list[str]):
+        identifier_pat = "SDL_[_a-zA-Z0-9]{0,30}"
+        parameters_pat = r"\([^)]\)"
+        replacement_list_pat = r"(?<=\s).*"
+        macro_pat = re.compile(
+            rf"#define ({identifier_pat})({parameters_pat})?\s*({replacement_list_pat})?"
+        )
+
+        for s in defines:
+            if (m := macro_pat.fullmatch(s)) is not None:
+                identifier = m.group(1)
+                has_parameters = m.group(2) is not None
+                replacement = m.group(3)
+
+                if has_parameters or replacement in self.functions:
+                    self.functions.append(identifier)
+
+                elif replacement in self.types:
+                    self.types.append(identifier)
+
+                elif replacement in self.enums:
+                    self.enums.append(identifier)
+
+                else:
+                    # no params, no replacement or it is not an existing symbol
+                    self.defines.append(identifier)
+
 
 def generate_output(
     filename: str | bytes | Path, visitor: SDLVisitor, sdl_version: str
@@ -123,12 +150,7 @@ def process_file(filename: str | bytes | Path, inc_path: Path) -> None:
 
     cpp_args.append("-dM")
     defines_text = preprocess_file(filename, cpp_args=cpp_args)
-    for s in defines_text.split("\n"):
-        if s.startswith("#define "):
-            m = re.search("(SDL_[A-Za-z0-9_]+)", s)
-
-            if m is not None and m.group(0).isupper():
-                visitor.defines.append(m.group(0))
+    visitor.process_defines(defines_text.splitlines())
 
     generate_output("sdl2.vim", visitor, sdl_version)
 
